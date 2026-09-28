@@ -17,8 +17,8 @@ class TodoControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
-    private TodoService todoService;   // gerçek Service yerine sahte bean
+	@MockitoBean
+    private TodoService todoService;
 
     @Test
     void createTodoReturns201() throws Exception {
@@ -87,7 +87,6 @@ class TodoControllerTest {
 
 	@Test
 	void updateTodoReturns400WhenTitleIsBlank() throws Exception {
-		// Bu, eski kodda 404 dönen bug'ın testi: artık doğru şekilde 400 dönmeli.
 		mockMvc.perform(put("/todos/0")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("""
