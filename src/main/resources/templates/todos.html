@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo Listesi</title>
+</head>
+<body>
+    <h1>Todo Listesi</h1>
+    <table border="1">
+        <tr>
+            <th>Başlık</th>
+            <th>Açıklama</th>
+            <th>Tamamlandı mı</th>
+        </tr>
+        <tr th:each="todo : ${todos}">
+            <td th:text="${todo.title}"></td>
+            <td th:text="${todo.description}"></td>
+            <td th:text="${todo.completed}"></td>
+        </tr>
+    </table>
+    <a href="/todos-view/new">Yeni Todo Ekle</a>
+</body>
+</html>

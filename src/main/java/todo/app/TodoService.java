@@ -1,9 +1,7 @@
 package todo.app;
 
 import org.springframework.stereotype.Service;
-import todo.app.TodoRepository;
 import java.util.List;
-import todo.app.TodoResponse;
 
 @Service
 class TodoService {
@@ -21,8 +19,8 @@ class TodoService {
 		return todoRepository.findById(id);
 	}
 
-	public TodoResponse createTodo(Todo todo) {
-		return todoRepository.create(todo);
+	public TodoResponse createTodo(CreateTodoRequest todo) {
+		return todoRepository.create(new Todo(todo.title(), todo.description()));
 	}
 
 	public TodoResponse updateTodo(int id, Todo todo) {

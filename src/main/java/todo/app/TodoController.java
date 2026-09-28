@@ -1,7 +1,8 @@
 package todo.app;
 
-import todo.app.TodoService;
 import java.util.List;
+import java.net.URI;
+
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,9 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import todo.app.TodoResponse;
-import java.net.URI;
+import jakarta.validation.Valid;
 
 @RestController
 class TodoController {
@@ -32,42 +31,26 @@ class TodoController {
 	@GetMapping("/todos/{id}")
 	public ResponseEntity<TodoResponse> getTodoById(@PathVariable int id)
 	{
-		try
-		{
-			return ResponseEntity.ok(todoService.getTodoById(id));
-		}
-		catch (IllegalArgumentException e)
-		{
-			return ResponseEntity.notFound().build();
-		}
+		return ResponseEntity.ok(todoService.getTodoById(id));
 	}
 
 	@PostMapping("/todos")
-	public ResponseEntity<TodoResponse> createTodo(@RequestBody Todo todo)
+	public ResponseEntity<TodoResponse> createTodo(@Valid @RequestBody CreateTodoRequest todo)
 	{
-		System.out.println("Creating todo: " + todo);
 		TodoResponse newtodo = todoService.createTodo(todo);
 		URI location = URI.create("/todos/" + newtodo.id());
 		return ResponseEntity.created(location).body(newtodo);
 	}
 
 	@PutMapping("/todos/{id}")
-	public ResponseEntity<TodoResponse> updateTodo(@PathVariable int id, @RequestBody Todo todo) {
-		try {
-			return ResponseEntity.ok(todoService.updateTodo(id, todo));
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<TodoResponse> updateTodo(@PathVariable int id, @Valid @RequestBody UpdateTodoRequest request) {
+		Todo todo = new Todo(request.title(), request.description(), request.completed());
+		return ResponseEntity.ok(todoService.updateTodo(id, todo));
 	}
-
 
 	@DeleteMapping("/todos/{id}")
 	public ResponseEntity<Void> deleteTodo(@PathVariable int id) {
-		try {
-			todoService.deleteTodo(id);
-			return ResponseEntity.noContent().build();
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.notFound().build();
-		}
+		todoService.deleteTodo(id);
+		return ResponseEntity.noContent().build();
 	}
 }

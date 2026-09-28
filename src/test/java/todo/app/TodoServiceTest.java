@@ -8,25 +8,28 @@ class TodoServiceTest {
 
     @Test
     void createTodoDelegatesToRepository() {
-        TodoRepository repo = mock(TodoRepository.class);   // sahte repository
-        Todo todo = new Todo("Süt al", "2 litre");
-        TodoResponse entry = new TodoResponse(0, todo.title(), todo.description(), todo.completed());
-        when(repo.create(todo)).thenReturn(entry);           // "create çağrılırsa şunu döndür"
+		TodoRepository repo = mock(TodoRepository.class);
+		TodoService service = new TodoService(repo);
 
-        TodoService service = new TodoService(repo);          // sahte repo'yu elle veriyoruz
-        TodoResponse result = service.createTodo(todo);
+		CreateTodoRequest request = new CreateTodoRequest("Test Title", "Test Description");
+		Todo todo = new Todo(request.title(), request.description());
+		TodoResponse expectedResponse = new TodoResponse(1, todo.title(), todo.description(), false);
 
-        assertEquals(entry, result);
-        verify(repo).create(todo);                            // gerçekten çağrıldı mı kontrol et
+		when(repo.create(any(Todo.class))).thenReturn(expectedResponse);
+
+		TodoResponse actualResponse = service.createTodo(request);
+
+		assertEquals(expectedResponse, actualResponse);
+		verify(repo).create(any(Todo.class));
     }
 
     @Test
     void getTodoByIdPropagatesNotFound() {
         TodoRepository repo = mock(TodoRepository.class);
-        when(repo.findById(5)).thenThrow(new IllegalArgumentException("bulunamadı"));
+        when(repo.findById(5)).thenThrow(new TodoNotFoundException(5));
 
         TodoService service = new TodoService(repo);
 
-        assertThrows(IllegalArgumentException.class, () -> service.getTodoById(5));
+        assertThrows(TodoNotFoundException.class, () -> service.getTodoById(5));
     }
 }

@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.HashMap;
-import todo.app.TodoResponse;
-import todo.app.Todo;
 
 @Repository
 public class TodoRepository
@@ -29,7 +27,7 @@ public class TodoRepository
 	public TodoResponse findById(int id) {
 		Todo todo = todos.get(id);
 		if (todo == null)
-			throw new IllegalArgumentException("Todo with id " + id + " not found");
+			throw new TodoNotFoundException(id);
 		return new TodoResponse(id, todo.title(), todo.description(), todo.completed());
 	}
 
@@ -41,14 +39,14 @@ public class TodoRepository
 
 	public TodoResponse update(int id, Todo todo) {
 		if (!todos.containsKey(id))
-			throw new IllegalArgumentException("Todo with id " + id + " not found");
+			throw new TodoNotFoundException(id);
 		todos.put(id, todo);
 		return new TodoResponse(id, todo.title(), todo.description(), todo.completed());
 	}
 
 	public void delete(int id) {
 		if (!todos.containsKey(id))
-			throw new IllegalArgumentException("Todo with id " + id + " not found");
+			throw new TodoNotFoundException(id);
 		todos.remove(id);
 	}
 

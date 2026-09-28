@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yeni Todo</title>
+</head>
+<body>
+    <h1>Yeni Todo Ekle</h1>
+    <form th:action="@{/todos-view}" method="post">
+        <label>Başlık: <input type="text" name="title"></label><br>
+        <label>Açıklama: <input type="text" name="description"></label><br>
+        <button type="submit">Ekle</button>
+    </form>
+</body>
+</html>

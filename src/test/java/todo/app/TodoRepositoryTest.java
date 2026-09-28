@@ -24,7 +24,7 @@ class TodoRepositoryTest {
 
     @Test
     void findByIdThrowsWhenMissing() {
-        assertThrows(IllegalArgumentException.class, () -> repository.findById(999));
+        assertThrows(TodoNotFoundException.class, () -> repository.findById(999));
     }
 
     @Test
@@ -32,6 +32,6 @@ class TodoRepositoryTest {
         TodoResponse created = repository.create(new Todo("Süt al", "2 litre"));
         repository.delete(created.id());
 
-        assertThrows(IllegalArgumentException.class, () -> repository.findById(created.id()));
+        assertThrows(TodoNotFoundException.class, () -> repository.findById(created.id()));
     }
 }
